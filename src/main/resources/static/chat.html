@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chat</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+    <h1>Chat</h1>
+    <p id="chatInfo"></p>
+
+    <div id="chatBox" class="chat-box"></div>
+
+    <div id="typingIndicator" class="typing-indicator hidden">
+        <span></span><span></span><span></span>
+    </div>
+
+    <p id="messageCounter" class="context-text">
+        You have sent 0 of 10 messages. You can continue after 3 messages.
+    </p>
+
+    <form id="chatForm" class="chat-form">
+
+    <input id="messageInput" type="text" placeholder="Type your message..." autocomplete="off" />
+        <button type="submit">Send</button>
+    </form>
+
+    <button id="nextRoundBtn" class="secondary-btn" disabled>Go to next round</button>
+</div>
+
+<script src="app.js"></script>
+<script>
+    const userId = localStorage.getItem("userId");
+    const round = getCurrentRound();
+
+    if (!userId || !round) {
+        window.location.href = "index.html";
+    }
+
+    const conversationId = localStorage.getItem("conversationId") || getConversationId(userId);
+    localStorage.setItem("conversationId", conversationId);
+
+    const roundIndex = getCurrentRoundIndex();
+    const roundLabel = roundIndex < 2 ? "Round A" : "Round B";
+
+    document.getElementById("chatInfo").textContent =
+    `${roundLabel} | Topic: ${round.topic} | Mode: ${round.mode}`;
+
+    const chatBox = document.getElementById("chatBox");
+    const chatForm = document.getElementById("chatForm");
+    const messageInput = document.getElementById("messageInput");
+    const nextRoundBtn = document.getElementById("nextRoundBtn");
+    const typingIndicator = document.getElementById("typingIndicator");
+    const messageCounter = document.getElementById("messageCounter");
+
+    const MIN_USER_MESSAGES = 3;
+    const MAX_USER_MESSAGES = 10;
+
+    let userMessageCount = 0;
+
+    function updateRoundProgress() {
+        messageCounter.textContent =
+            `You have sent ${userMessageCount} of ${MAX_USER_MESSAGES} messages. ` +
+            `You can continue after ${MIN_USER_MESSAGES} messages.`;
+
+        nextRoundBtn.disabled = userMessageCount < MIN_USER_MESSAGES;
+
+        if (userMessageCount >= MAX_USER_MESSAGES) {
+            messageInput.disabled = true;
+            chatForm.querySelector("button[type='submit']").disabled = true;
+            messageCounter.textContent =
+                `You have sent ${MAX_USER_MESSAGES} messages. Please continue to the next round.`;
+        }
+    }
+
+    function addMessage(text, sender) {
+        const div = document.createElement("div");
+        div.className = sender === "user" ? "message user" : "message assistant";
+        div.textContent = text;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function parseResponse(res) {
+        const text = await res.text();
+        try {
+            return text ? JSON.parse(text) : {};
+        } catch (e) {
+            console.error("Invalid JSON response:", text);
+            throw new Error("Server returned invalid JSON.");
+        }
+    }
+
+    async function startConversationIfNeeded() {
+        if (chatBox.children.length > 0) return;
+
+        try {
+            const res = await fetch("/start-conversation", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId,
+                    conversationId,
+                    topic: round.topic,
+                    mode: round.mode
+                })
+            });
+
+            const data = await parseResponse(res);
+            console.log("start-conversation response:", data);
+
+            if (!res.ok) {
+                throw new Error(data.error || "Unknown error while starting conversation.");
+            }
+
+            if (data.openingMessage) {
+                addMessage(data.openingMessage, "assistant");
+            } else {
+                addMessage("No opening message received.", "assistant");
+            }
+        } catch (error) {
+            console.error("startConversationIfNeeded failed:", error);
+            addMessage("Error: " + error.message, "assistant");
+        }
+    }
+
+    chatForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        addMessage(message, "user");
+            messageInput.value = "";
+
+            userMessageCount++;
+            updateRoundProgress();
+
+            typingIndicator.classList.remove("hidden");
+
+
+        try {
+            const res = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    conversationId,
+                    userId,
+                    topic: round.topic,
+                    mode: round.mode,
+                    message
+                })
+            });
+
+            const data = await parseResponse(res);
+            console.log("/chat response:", data);
+            typingIndicator.classList.add("hidden");
+
+            if (!res.ok) {
+                throw new Error(data.error || "Unknown chat error.");
+            }
+
+            if (data.reply) {
+                addMessage(data.reply, "assistant");
+                typingIndicator.classList.add("hidden");
+            } else {
+                addMessage("No reply received.", "assistant");
+            }
+        } catch (error) {
+            typingIndicator.classList.add("hidden");
+            console.error("chat submit failed:", error);
+            addMessage("Error: " + error.message, "assistant");
+        }
+    });
+
+    nextRoundBtn.addEventListener("click", () => {
+        moveToNextRound();
+    });
+
+    updateRoundProgress();
+    startConversationIfNeeded();
+
+</script>
+</body>
+</html>

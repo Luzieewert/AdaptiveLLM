@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Instructions</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+    <h1>Study Instructions</h1>
+
+    <div class="card">
+        <p>
+            In this study, you will interact with an AI assistant in two separate rounds.
+            Before each round, you will indicate how you would like the assistant to communicate.
+            You will then have a short conversation with the assistant about a given topic.
+            Please write at least 3 and at most 10 messages per round.
+        </p>
+
+        <p>
+            There are no right or wrong answers. We are interested in your personal experience.
+        </p>
+
+        <button onclick="startStudy()">Start</button>
+    </div>
+</div>
+
+<script>
+    function startStudy() {
+        window.location.href = "round.html";
+    }
+</script>
+</body>
+</html>

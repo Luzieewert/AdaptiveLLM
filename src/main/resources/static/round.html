@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Next Round</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+    <h1 id="roundHeading"></h1>
+
+    <div class="card">
+        <p id="roundTitle"></p>
+        <p id="roundDescription"></p>
+        <button id="continueBtn">Continue</button>
+    </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+    const round = getCurrentRound();
+
+    if (!round) {
+        window.location.href = "index.html";
+    }
+
+    const roundIndex = getCurrentRoundIndex();
+    const roundLabel = roundIndex < 2 ? "Round A" : "Round B";
+
+    document.getElementById("roundHeading").textContent = roundLabel;
+    document.getElementById("roundTitle").textContent = `Topic: ${round.topic}`;
+
+    document.getElementById("roundDescription").textContent =
+        round.needsOnboarding
+            ? "In this round, you will first set your communication preferences and then start the conversation."
+            : "In this round, you will start a neutral conversation without setting communication preferences beforehand.";
+
+    document.getElementById("continueBtn").addEventListener("click", () => {
+        if (round.needsOnboarding) {
+            window.location.href = "onboarding.html";
+        } else {
+            window.location.href = "chat.html";
+        }
+    });
+</script>
+</body>
+</html>

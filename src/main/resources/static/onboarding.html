@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Onboarding</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+    <h1>Communication Preferences</h1>
+
+    <p id="topicContext" class="context-text"></p>
+
+    <form id="onboardingForm" class="card">
+
+        <!-- Tone -->
+        <div class="question">
+            <p class="question-text">
+                Use a casual communication style.
+            </p>
+            <p class="question-hint">
+                Example:<br><br>
+                <strong>Casual:</strong> “You could try something like reading or going for a hike”<br>
+                <strong>Formal:</strong> “I would recommend considering activities such as reading or hiking.”
+            </p>
+            <div class="likert-label-row">
+                <span>Strongly disagree</span>
+                <span>Strongly agree</span>
+            </div>
+            <div class="likert-scale">
+                <label><input type="radio" name="tone" value="1" required><span>1</span></label>
+                <label><input type="radio" name="tone" value="2"><span>2</span></label>
+                <label><input type="radio" name="tone" value="3"><span>3</span></label>
+                <label><input type="radio" name="tone" value="4"><span>4</span></label>
+                <label><input type="radio" name="tone" value="5"><span>5</span></label>
+                <label><input type="radio" name="tone" value="6"><span>6</span></label>
+            </div>
+        </div>
+
+        <!-- Warmth -->
+        <div class="question">
+            <p class="question-text">Show empathy and emotional understanding.</p>
+            <div class="likert-label-row">
+                <span>Strongly disagree</span>
+                <span>Strongly agree</span>
+            </div>
+            <div class="likert-scale">
+                <label><input type="radio" name="warmth" value="1" required><span>1</span></label>
+                <label><input type="radio" name="warmth" value="2"><span>2</span></label>
+                <label><input type="radio" name="warmth" value="3"><span>3</span></label>
+                <label><input type="radio" name="warmth" value="4"><span>4</span></label>
+                <label><input type="radio" name="warmth" value="5"><span>5</span></label>
+                <label><input type="radio" name="warmth" value="6"><span>6</span></label>
+            </div>
+        </div>
+
+        <!-- Directness -->
+        <div class="question">
+            <p class="question-text">Get straight to the point.</p>
+            <div class="likert-label-row">
+                <span>Strongly disagree</span>
+                <span>Strongly agree</span>
+            </div>
+            <div class="likert-scale">
+                <label><input type="radio" name="directness" value="1" required><span>1</span></label>
+                <label><input type="radio" name="directness" value="2"><span>2</span></label>
+                <label><input type="radio" name="directness" value="3"><span>3</span></label>
+                <label><input type="radio" name="directness" value="4"><span>4</span></label>
+                <label><input type="radio" name="directness" value="5"><span>5</span></label>
+                <label><input type="radio" name="directness" value="6"><span>6</span></label>
+            </div>
+        </div>
+
+        <!-- Mitigation -->
+        <div class="question">
+            <p class="question-text">Phrase suggestions cautiously rather than very directly.</p>
+            <div class="likert-label-row">
+                <span>Strongly disagree</span>
+                <span>Strongly agree</span>
+            </div>
+            <div class="likert-scale">
+                <label><input type="radio" name="mitigation" value="1" required><span>1</span></label>
+                <label><input type="radio" name="mitigation" value="2"><span>2</span></label>
+                <label><input type="radio" name="mitigation" value="3"><span>3</span></label>
+                <label><input type="radio" name="mitigation" value="4"><span>4</span></label>
+                <label><input type="radio" name="mitigation" value="5"><span>5</span></label>
+                <label><input type="radio" name="mitigation" value="6"><span>6</span></label>
+            </div>
+        </div>
+
+        <!-- Expressiveness -->
+        <div class="question">
+            <p class="question-text">Use expressive elements such as emojis or encouraging wording.</p>
+            <div class="likert-label-row">
+                <span>Strongly disagree</span>
+                <span>Strongly agree</span>
+            </div>
+            <div class="likert-scale">
+                <label><input type="radio" name="expressiveness" value="1" required><span>1</span></label>
+                <label><input type="radio" name="expressiveness" value="2"><span>2</span></label>
+                <label><input type="radio" name="expressiveness" value="3"><span>3</span></label>
+                <label><input type="radio" name="expressiveness" value="4"><span>4</span></label>
+                <label><input type="radio" name="expressiveness" value="5"><span>5</span></label>
+                <label><input type="radio" name="expressiveness" value="6"><span>6</span></label>
+            </div>
+        </div>
+
+        <!-- Turn Length -->
+        <div class="question">
+            <p class="question-text">Provide detailed and elaborative responses rather than short answers.</p>
+            <div class="likert-label-row">
+                <span>Strongly disagree</span>
+                <span>Strongly agree</span>
+            </div>
+            <div class="likert-scale">
+                <label><input type="radio" name="turnLength" value="1" required><span>1</span></label>
+                <label><input type="radio" name="turnLength" value="2"><span>2</span></label>
+                <label><input type="radio" name="turnLength" value="3"><span>3</span></label>
+                <label><input type="radio" name="turnLength" value="4"><span>4</span></label>
+                <label><input type="radio" name="turnLength" value="5"><span>5</span></label>
+                <label><input type="radio" name="turnLength" value="6"><span>6</span></label>
+            </div>
+        </div>
+
+        <button type="submit">Continue to Chat</button>
+    </form>
+</div>
+
+<script src="app.js"></script>
+<script>
+    const userId = localStorage.getItem("userId");
+    const round = getCurrentRound();
+
+    if (!userId || !round) {
+        window.location.href = "index.html";
+    }
+
+    const conversationId = getConversationId(userId);
+
+    document.getElementById("topicContext").textContent =
+        `In a conversation with an AI assistant about "${round.topic}", how would you prefer the assistant to communicate?`;
+
+    document.getElementById("onboardingForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const form = new FormData(e.target);
+
+        const payload = {
+            userId: userId,
+            conversationId: conversationId,
+            topic: round.topic,
+            mode: round.mode,
+            responses: {
+                tone: Number(form.get("tone")),
+                warmth: Number(form.get("warmth")),
+                directness: Number(form.get("directness")),
+                mitigation: Number(form.get("mitigation")),
+                expressiveness: Number(form.get("expressiveness")),
+                turnLength: Number(form.get("turnLength"))
+            }
+        };
+
+        try {
+            const res = await fetch("/onboarding", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || "Failed to save onboarding data.");
+            }
+
+            localStorage.setItem("conversationId", conversationId);
+            window.location.href = "chat.html";
+        } catch (error) {
+            alert("Failed to save onboarding preferences: " + error.message);
+        }
+    });
+</script>
+</body>
+</html>

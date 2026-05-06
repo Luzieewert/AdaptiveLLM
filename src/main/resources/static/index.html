@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Adaptive Assistant Study</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+    <h1>Adaptive Assistant Study</h1>
+    <p>Please enter your participant ID to begin.</p>
+
+    <div class="card">
+        <label for="userId">Participant ID</label>
+        <input id="userId" type="text" placeholder="e.g. p01" />
+        <button id="startBtn">Start</button>
+    </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+    document.getElementById("startBtn").addEventListener("click", () => {
+        const userId = document.getElementById("userId").value.trim();
+        if (!userId) {
+            alert("Please enter a participant ID.");
+            return;
+        }
+
+        localStorage.setItem("userId", userId);
+        localStorage.setItem("roundIndex", "0");
+        localStorage.removeItem("conversationId");
+
+        window.location.href = "instructions.html";
+    });
+</script>
+</body>
+</html>
