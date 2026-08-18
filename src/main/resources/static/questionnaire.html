@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Questionnaire</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+    <h1 id="questionnaireTitle">Questionnaire</h1>
+
+    <p id="questionnaireIntro" class="context-text"></p>
+
+    <form id="questionnaireForm" class="card"></form>
+</div>
+
+<script src="app.js"></script>
+<script>
+    const userId = localStorage.getItem("userId");
+    const step = getCurrentStep();
+
+    if (!userId || !step || step.type !== "questionnaire") {
+        goToCurrentStepPage();
+    }
+
+    const roundLabel = getBlockLabel(step.block);
+
+    document.getElementById("questionnaireTitle").textContent =
+        `${roundLabel} Questionnaire`;
+
+    document.getElementById("questionnaireIntro").textContent =
+        "Please answer the following questions based on the two chats you just completed in this round. Answer intuitively based on your personal experience.";
+
+    const agreementItems = [
+
+        // Manipulation Check
+        ["adaptedStyle", "The AI assistant adapted its communication style to me."],
+        ["personalized", "The AI assistant seemed personalized to my preferences."],
+
+        // Alignment
+        ["alignmentPreferences", "The AI assistant communicated in a way that matched my preferences."],
+        ["alignmentAppropriate", "The AI assistant's communication style felt appropriate for me."],
+        ["alignmentWanted", "I felt that the AI assistant adapted to how I wanted the conversation to be conducted."],
+        ["alignmentNatural", "The AI assistant communicated in a way that felt natural to me."],
+        ["alignmentBehavior", "The AI assistant behaved as I would have wanted it to behave."],
+
+        // Trust
+        ["trustInfo", "I trusted the information provided by the AI assistant."],
+        ["trustCompetent", "The AI assistant seemed competent."],
+        ["trustReliable", "The AI assistant seemed reliable."],
+        ["trustFuture", "I would rely on this AI assistant in a future conversation."],
+        ["trustConfident", "I felt confident interacting with the AI assistant."]
+    ];
+
+    const mindItems = [
+
+        // Experience
+        ["experiencePain", "The AI assistant is capable of feeling pain."],
+        ["experienceFear", "The AI assistant is capable of feeling fear."],
+        ["experienceDesiresPersonality", "The AI assistant is capable of wanting certain things and having a personality."],
+
+        // Agency
+        ["agencySelfControl", "The AI assistant is capable of self-control."],
+        ["agencyMemory", "The AI assistant is capable of remembering things."],
+        ["agencyMorality", "The AI assistant is capable of telling right from wrong and trying to do the right thing."]
+    ];
+
+    const items = [...agreementItems, ...mindItems];
+
+    const form = document.getElementById("questionnaireForm");
+
+    function addSectionTitle(title, description) {
+        const section = document.createElement("div");
+        section.className = "question-section";
+
+        section.innerHTML = `
+            <h2 class="section-title">${title}</h2>
+            <p class="context-text">${description}</p>
+        `;
+
+        form.appendChild(section);
+    }
+
+    function addQuestion(name, text, leftLabel, rightLabel) {
+        const question = document.createElement("div");
+        question.className = "question";
+
+        question.innerHTML = `
+            <p class="question-text">${text}</p>
+
+            <div class="likert-label-row">
+                <span>${leftLabel}</span>
+                <span>${rightLabel}</span>
+            </div>
+
+            <div class="likert-scale">
+                <label><input type="radio" name="${name}" value="1" required><span>1</span></label>
+                <label><input type="radio" name="${name}" value="2"><span>2</span></label>
+                <label><input type="radio" name="${name}" value="3"><span>3</span></label>
+                <label><input type="radio" name="${name}" value="4"><span>4</span></label>
+                <label><input type="radio" name="${name}" value="5"><span>5</span></label>
+                <label><input type="radio" name="${name}" value="6"><span>6</span></label>
+            </div>
+        `;
+
+        form.appendChild(question);
+    }
+
+    // SECTION 1
+
+    addSectionTitle(
+        "Interaction Experience",
+        "Please indicate how much you agree with the following statements."
+    );
+
+    agreementItems.forEach(([name, text]) => {
+        addQuestion(
+            name,
+            text,
+            "Strongly disagree",
+            "Strongly agree"
+        );
+    });
+
+    // SECTION 2
+
+    addSectionTitle(
+        "Perception of the AI Assistant",
+        "Please indicate how capable you think the AI assistant is of the following."
+    );
+
+    mindItems.forEach(([name, text]) => {
+        addQuestion(
+            name,
+            text,
+            "Not capable at all",
+            "Very capable"
+        );
+    });
+
+    const button = document.createElement("button");
+    button.type = "submit";
+    button.textContent = "Continue";
+    form.appendChild(button);
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const responses = {};
+
+        items.forEach(([name]) => {
+            responses[name] = formData.get(name);
+        });
+
+        const payload = {
+            userId,
+            stepType: "questionnaire",
+            block: step.block,
+            responses
+        };
+
+        const res = await fetch("/study-event", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            alert("Failed to save questionnaire.");
+            return;
+        }
+
+        moveToNextStep();
+    });
+</script>
+</body>
+</html>

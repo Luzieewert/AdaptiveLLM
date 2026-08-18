@@ -25,6 +25,7 @@ object PromptBuilder {
         - Keep the interaction conversational and natural.
         - If preferences conflict, response length has priority over warmth, expressiveness, mitigation, and detail.
         - Never compensate for a short response preference by adding extra politeness, examples, or explanations.
+        - Ask natural follow-up questions only when appropriate.
 
     """.trimIndent()
     }

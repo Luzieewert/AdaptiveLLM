@@ -19,29 +19,24 @@
 
 <script src="app.js"></script>
 <script>
-    const round = getCurrentRound();
+    const step = getCurrentStep();
 
-    if (!round) {
-        window.location.href = "index.html";
+    if (!step || step.type !== "chat") {
+        goToCurrentStepPage();
     }
 
-    const roundIndex = getCurrentRoundIndex();
-    const roundLabel = roundIndex < 2 ? "Round A" : "Round B";
+    const roundLabel = getBlockLabel(step.block);
 
-    document.getElementById("roundHeading").textContent = roundLabel;
-    document.getElementById("roundTitle").textContent = `Topic: ${round.topic}`;
+    document.querySelector("h1").textContent = roundLabel;
+    document.getElementById("roundTitle").textContent = `Topic: ${step.topic}`;
 
     document.getElementById("roundDescription").textContent =
-        round.needsOnboarding
-            ? "In this round, you will first set your communication preferences and then start the conversation."
-            : "In this round, you will start a neutral conversation without setting communication preferences beforehand.";
+        step.mode === "adaptive"
+            ? "In this conversation, the assistant will respond based on the communication preferences you selected."
+            : "In this conversation, you will chat with a standard version of the assistant.";
 
     document.getElementById("continueBtn").addEventListener("click", () => {
-        if (round.needsOnboarding) {
-            window.location.href = "onboarding.html";
-        } else {
-            window.location.href = "chat.html";
-        }
+        window.location.href = "chat.html";
     });
 </script>
 </body>

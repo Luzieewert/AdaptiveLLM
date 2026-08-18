@@ -1,16 +1,17 @@
 package com.example
 
 import com.example.api.exportRoutes
-import com.example.study.InMemoryStudyDataStore
 import com.example.api.chatRoutes
 import com.example.api.onboardingRoutes
 import com.example.api.profileRoutes
 import com.example.api.startConversationRoutes
+import com.example.api.questionnaireRoutes
 import com.example.domain.ChatService
 import com.example.llm.OpenAiLlmClient
+import com.example.api.studyEventRoutes
 import com.example.persistence.InMemoryConversationStore
 import com.example.persistence.InMemoryUserProfileStore
-import com.openai.models.ChatModel
+import com.example.study.PersistentStudyDataStore
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -37,7 +38,7 @@ fun Application.module() {
 
     val conversationStore = InMemoryConversationStore()
     val profileStore = InMemoryUserProfileStore()
-    val studyDataStore = InMemoryStudyDataStore()
+    val studyDataStore = PersistentStudyDataStore()
     val llmClient = OpenAiLlmClient()
     val chatService = ChatService(conversationStore, profileStore, llmClient, studyDataStore)
 
@@ -67,6 +68,8 @@ fun Application.module() {
         startConversationRoutes(chatService)
         profileRoutes(profileStore)
         exportRoutes(studyDataStore)
+        questionnaireRoutes(studyDataStore)
+        studyEventRoutes(studyDataStore)
 
         staticResources("/", "static")
 

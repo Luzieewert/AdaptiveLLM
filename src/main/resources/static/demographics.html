@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Demographics</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+  <h1>Demographics</h1>
+
+  <p class="context-text">
+    Finally, we would like to ask a few demographic questions.
+    This information will only be used for research purposes and will be analyzed anonymously.
+  </p>
+
+  <form id="demographicsForm" class="card">
+
+    <div class="question">
+      <p class="question-text">What is your age?</p>
+      <input type="number" name="age" min="18" max="100" required />
+    </div>
+
+    <div class="question">
+      <p class="question-text">What is your gender?</p>
+      <select name="gender" required>
+        <option value="">Please select</option>
+        <option value="female">Female</option>
+        <option value="male">Male</option>
+        <option value="non_binary">Non-binary</option>
+        <option value="self_describe">Prefer to self-describe</option>
+        <option value="prefer_not_to_say">Prefer not to say</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <p class="question-text">What is your highest completed level of education?</p>
+      <select name="education" required>
+        <option value="">Please select</option>
+        <option value="high_school">High school or equivalent</option>
+        <option value="bachelor">Bachelor's degree</option>
+        <option value="master">Master's degree</option>
+        <option value="phd">Doctoral degree</option>
+        <option value="other">Other</option>
+        <option value="prefer_not_to_say">Prefer not to say</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <p class="question-text">What is your native language?</p>
+      <input type="text" name="nativeLanguage" required />
+    </div>
+
+    <div class="question">
+      <p class="question-text">What is your field of study or work?</p>
+      <input type="text" name="field" required />
+    </div>
+
+    <button type="submit">Finish Study</button>
+  </form>
+</div>
+
+<script src="app.js"></script>
+<script>
+  const userId = localStorage.getItem("userId");
+
+  if (!userId) {
+      window.location.href = "index.html";
+  }
+
+  document.getElementById("demographicsForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const form = new FormData(e.target);
+
+      const payload = {
+          userId: userId,
+          stepType: "demographics",
+          responses: {
+              age: String(form.get("age")),
+              gender: String(form.get("gender")),
+              education: String(form.get("education")),
+              nativeLanguage: String(form.get("nativeLanguage")),
+              field: String(form.get("field"))
+          }
+      };
+
+      const res = await fetch("/study-event", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+          alert("Failed to save demographics.");
+          return;
+      }
+
+      moveToNextStep();
+  });
+</script>
+</body>
+</html>

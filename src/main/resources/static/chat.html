@@ -27,7 +27,7 @@
         <button type="submit">Send</button>
     </form>
 
-    <button id="nextRoundBtn" class="secondary-btn" disabled>Go to next round</button>
+    <button id="nextRoundBtn" class="secondary-btn" disabled>Continue</button>
 </div>
 
 <script src="app.js"></script>
@@ -42,8 +42,7 @@
     const conversationId = localStorage.getItem("conversationId") || getConversationId(userId);
     localStorage.setItem("conversationId", conversationId);
 
-    const roundIndex = getCurrentRoundIndex();
-    const roundLabel = roundIndex < 2 ? "Round A" : "Round B";
+    const roundLabel = getBlockLabel(round.block);
 
     document.getElementById("chatInfo").textContent =
     `${roundLabel} | Topic: ${round.topic} | Mode: ${round.mode}`;
@@ -65,7 +64,13 @@
             `You have sent ${userMessageCount} of ${MAX_USER_MESSAGES} messages. ` +
             `You can continue after ${MIN_USER_MESSAGES} messages.`;
 
-        nextRoundBtn.disabled = userMessageCount < MIN_USER_MESSAGES;
+        if (userMessageCount >= MIN_USER_MESSAGES) {
+        nextRoundBtn.disabled = false;
+        nextRoundBtn.classList.add("ready");
+        } else {
+        nextRoundBtn.disabled = true;
+        nextRoundBtn.classList.remove("ready");
+        }
 
         if (userMessageCount >= MAX_USER_MESSAGES) {
             messageInput.disabled = true;
@@ -109,7 +114,6 @@
             });
 
             const data = await parseResponse(res);
-            console.log("start-conversation response:", data);
 
             if (!res.ok) {
                 throw new Error(data.error || "Unknown error while starting conversation.");
@@ -154,7 +158,6 @@
             });
 
             const data = await parseResponse(res);
-            console.log("/chat response:", data);
             typingIndicator.classList.add("hidden");
 
             if (!res.ok) {
@@ -175,7 +178,7 @@
     });
 
     nextRoundBtn.addEventListener("click", () => {
-        moveToNextRound();
+    moveToNextStep();
     });
 
     updateRoundProgress();

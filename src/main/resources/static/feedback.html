@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Final Feedback</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+  <h1>Final Feedback</h1>
+
+  <p class="context-text">
+    Thank you for completing the study. If you would like, you can leave one final comment about your experience.
+  </p>
+
+  <form id="feedbackForm" class="card">
+    <div class="question">
+      <p class="question-text">
+        Do you have any comments, suggestions, or observations about the AI assistant or the study?
+      </p>
+
+      <textarea
+              name="freeTextFeedback"
+              rows="6"
+              placeholder="Optional feedback..."
+      ></textarea>
+    </div>
+
+    <button type="submit">Submit Feedback</button>
+  </form>
+</div>
+
+<script src="app.js"></script>
+<script>
+  const userId = localStorage.getItem("userId");
+
+  if (!userId) {
+      window.location.href = "index.html";
+  }
+
+  document.getElementById("feedbackForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const form = new FormData(e.target);
+
+      const payload = {
+          userId: userId,
+          stepType: "feedback",
+          responses: {
+              freeTextFeedback: String(form.get("freeTextFeedback") || "")
+          }
+      };
+
+      const res = await fetch("/study-event", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+          alert("Failed to save feedback.");
+          return;
+      }
+
+      moveToNextStep();
+  });
+</script>
+</body>
+</html>

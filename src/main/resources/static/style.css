@@ -32,7 +32,7 @@ label {
     margin-bottom: 6px;
 }
 
-input[type="text"] {
+input[type="text"]{
     padding: 12px;
     font-size: 16px;
     width: 100%;
@@ -41,6 +41,16 @@ input[type="text"] {
 
 input[type="range"] {
     width: 100%;
+}
+
+textarea {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
 }
 
 button {
@@ -60,10 +70,27 @@ button:hover {
 .secondary-btn {
     margin-top: 16px;
     background: #6b7280;
+    transition: background 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 .secondary-btn:hover {
     background: #4b5563;
+}
+
+.secondary-btn:disabled {
+    background: #cbd5e1;
+    color: white;
+    cursor: not-allowed;
+}
+
+.secondary-btn.ready {
+    background: #2563eb;
+    color: white;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.secondary-btn.ready:hover {
+    background: #1d4ed8;
 }
 
 .question {
@@ -216,6 +243,12 @@ button:hover {
     border-radius: 6px;
     font-size: 0.9rem;
     margin-top: 6px;
+}
+
+.chat-form button:disabled,
+.chat-form input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 

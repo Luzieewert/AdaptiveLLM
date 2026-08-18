@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Round Introduction</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+    <h1 id="blockTitle"></h1>
+
+    <div class="card">
+        <p id="blockDescription"></p>
+        <button id="continueBtn">Continue</button>
+    </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+    const step = getCurrentStep();
+
+    if (!step || step.type !== "blockIntro") {
+        goToCurrentStepPage();
+    }
+
+    const roundLabel = getBlockLabel(step.block);
+
+    document.getElementById("blockTitle").textContent =
+        `${roundLabel}: ${step.block === "neutral" ? "Standard Round" : "Personalized Round"}`;
+
+    document.getElementById("blockDescription").textContent =
+        step.block === "neutral"
+            ? "You will now complete two short chats with a standard version of the AI assistant."
+            : "You will now complete two short chats with an AI assistant that responds based on your selected communication preferences.";
+
+    document.getElementById("continueBtn").addEventListener("click", () => {
+        moveToNextStep();
+    });
+</script>
+</body>
+</html>

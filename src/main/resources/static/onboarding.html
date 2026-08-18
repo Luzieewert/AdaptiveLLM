@@ -41,6 +41,11 @@
         <!-- Warmth -->
         <div class="question">
             <p class="question-text">Show empathy and emotional understanding.</p>
+            <p class="question-hint">
+                <strong>Example:</strong><br>
+                Low empathy: “That can happen. You could try another activity.”<br>
+                High empathy: “That sounds frustrating. I can understand why you feel that way. Maybe another activity would feel more enjoyable.”
+            </p>
             <div class="likert-label-row">
                 <span>Strongly disagree</span>
                 <span>Strongly agree</span>
@@ -57,7 +62,12 @@
 
         <!-- Directness -->
         <div class="question">
-            <p class="question-text">Get straight to the point.</p>
+            <p class="question-text">Give clear and explicit answers.</p>
+            <p class="question-hint">
+                <strong>Example:</strong><br>
+                Less direct: “There are different options you could think about.”<br>
+                More direct: “I suggest choosing the option that fits your schedule best.”
+            </p>
             <div class="likert-label-row">
                 <span>Strongly disagree</span>
                 <span>Strongly agree</span>
@@ -74,7 +84,12 @@
 
         <!-- Mitigation -->
         <div class="question">
-            <p class="question-text">Phrase suggestions cautiously rather than very directly.</p>
+            <p class="question-text">Soften suggestions with cautious wording.</p>
+            <p class="question-hint">
+                <strong>Example:</strong><br>
+                Low cautiousness: “You should try hiking.”<br>
+                High cautiousness: “Maybe you could try hiking if that sounds enjoyable to you.”
+            </p>
             <div class="likert-label-row">
                 <span>Strongly disagree</span>
                 <span>Strongly agree</span>
@@ -92,6 +107,11 @@
         <!-- Expressiveness -->
         <div class="question">
             <p class="question-text">Use expressive elements such as emojis or encouraging wording.</p>
+            <p class="question-hint">
+                <strong>Example:</strong><br>
+                Low expressiveness: “Reading is a good hobby.”<br>
+                High expressiveness: “Reading is such a great hobby! 📚😊”
+            </p>
             <div class="likert-label-row">
                 <span>Strongly disagree</span>
                 <span>Strongly agree</span>
@@ -108,7 +128,12 @@
 
         <!-- Turn Length -->
         <div class="question">
-            <p class="question-text">Provide detailed and elaborative responses rather than short answers.</p>
+            <p class="question-text">Give longer responses with explanations or examples.</p>
+            <p class="question-hint">
+                <strong>Example:</strong><br>
+                Short: “I’d suggest going for a walk.”<br>
+                Long: “I’d suggest going for a walk because it is easy to do, does not require much planning, and can help you relax.”
+            </p>
             <div class="likert-label-row">
                 <span>Strongly disagree</span>
                 <span>Strongly agree</span>
@@ -133,13 +158,13 @@
     const round = getCurrentRound();
 
     if (!userId || !round) {
-        window.location.href = "index.html";
+        moveToNextStep();
     }
 
     const conversationId = getConversationId(userId);
 
     document.getElementById("topicContext").textContent =
-        `In a conversation with an AI assistant about "${round.topic}", how would you prefer the assistant to communicate?`;
+        `In a conversation with an AI assistant about "${round.topic}", how would you prefer the assistant to communicate? Please indicate how much you agree with each statement.`;
 
     document.getElementById("onboardingForm").addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -177,7 +202,7 @@
             }
 
             localStorage.setItem("conversationId", conversationId);
-            window.location.href = "chat.html";
+            moveToNextStep();
         } catch (error) {
             alert("Failed to save onboarding preferences: " + error.message);
         }

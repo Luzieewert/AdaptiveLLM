@@ -4,17 +4,16 @@ import com.example.domain.adaptation.PromptBuilder
 import com.example.llm.LlmClient
 import com.example.persistence.InMemoryConversationStore
 import com.example.persistence.InMemoryUserProfileStore
-import com.example.study.InMemoryStudyDataStore
-import com.example.study.StudyMessageRecord
+import com.example.study.PersistentStudyDataStore
+import com.example.study.StudyEvent
 
 class ChatService(
     private val store: InMemoryConversationStore,
     private val profileStore: InMemoryUserProfileStore,
     private val llmClient: LlmClient,
-    private val studyDataStore: InMemoryStudyDataStore
+    private val studyDataStore: PersistentStudyDataStore
 ) {
     companion object {
-        private const val MIN_USER_MESSAGES = 3
         private const val MAX_USER_MESSAGES = 10
     }
 
@@ -54,10 +53,12 @@ class ChatService(
 
         store.append(conversationId, Message(Role.ASSISTANT, openingMessage))
 
-        studyDataStore.addMessage(
-            StudyMessageRecord(
-                userId = userId,
-                conversationId = conversationId,
+        studyDataStore.appendEvent(
+            StudyEvent(
+                timestamp = System.currentTimeMillis(),
+                participantId = userId,
+                stepType = "message",
+                block = mode,
                 topic = topic,
                 mode = mode,
                 role = "ASSISTANT",
@@ -85,10 +86,12 @@ class ChatService(
 
         store.append(conversationId, Message(Role.USER, userMessage))
 
-        studyDataStore.addMessage(
-            StudyMessageRecord(
-                userId = userId,
-                conversationId = conversationId,
+        studyDataStore.appendEvent(
+            StudyEvent(
+                timestamp = System.currentTimeMillis(),
+                participantId = userId,
+                stepType = "message",
+                block = mode,
                 topic = topic,
                 mode = mode,
                 role = "USER",
@@ -121,10 +124,12 @@ class ChatService(
 
         store.append(conversationId, Message(Role.ASSISTANT, finalReply))
 
-        studyDataStore.addMessage(
-            StudyMessageRecord(
-                userId = userId,
-                conversationId = conversationId,
+        studyDataStore.appendEvent(
+            StudyEvent(
+                timestamp = System.currentTimeMillis(),
+                participantId = userId,
+                stepType = "message",
+                block = mode,
                 topic = topic,
                 mode = mode,
                 role = "ASSISTANT",

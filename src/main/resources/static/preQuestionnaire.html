@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Initial Questionnaire</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+    <h1>Initial Questionnaire</h1>
+
+    <form id="preQuestionnaireForm" class="card">
+
+        <div class="question">
+            <p class="question-text">How often do you use conversational AI assistants such as ChatGPT, Claude, Gemini, or similar systems?</p>
+            <select name="aiUseFrequency" required>
+                <option value="">Please select</option>
+                <option value="1">Never</option>
+                <option value="2">Occasionally</option>
+                <option value="3">A few times a month</option>
+                <option value="4">A few times a week</option>
+                <option value="5">Daily</option>
+                <option value="6">Multiple times a day</option>
+            </select>
+        </div>
+
+        <div class="question">
+            <p class="question-text">How familiar are you with conversational AI systems?</p>
+            <div class="likert-label-row">
+                <span>Not familiar at all</span>
+                <span>Very familiar</span>
+            </div>
+            <div class="likert-scale">
+                <label><input type="radio" name="aiFamiliarity" value="1" required><span>1</span></label>
+                <label><input type="radio" name="aiFamiliarity" value="2"><span>2</span></label>
+                <label><input type="radio" name="aiFamiliarity" value="3"><span>3</span></label>
+                <label><input type="radio" name="aiFamiliarity" value="4"><span>4</span></label>
+                <label><input type="radio" name="aiFamiliarity" value="5"><span>5</span></label>
+                <label><input type="radio" name="aiFamiliarity" value="6"><span>6</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p class="question-text">I generally trust information provided by AI systems.</p>
+            <div class="likert-label-row"><span>Strongly disagree</span><span>Strongly agree</span></div>
+            <div class="likert-scale">
+                <label><input type="radio" name="baselineTrustInfo" value="1" required><span>1</span></label>
+                <label><input type="radio" name="baselineTrustInfo" value="2"><span>2</span></label>
+                <label><input type="radio" name="baselineTrustInfo" value="3"><span>3</span></label>
+                <label><input type="radio" name="baselineTrustInfo" value="4"><span>4</span></label>
+                <label><input type="radio" name="baselineTrustInfo" value="5"><span>5</span></label>
+                <label><input type="radio" name="baselineTrustInfo" value="6"><span>6</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p class="question-text">I feel comfortable relying on AI assistants for advice.</p>
+            <div class="likert-label-row"><span>Strongly disagree</span><span>Strongly agree</span></div>
+            <div class="likert-scale">
+                <label><input type="radio" name="baselineTrustAdvice" value="1" required><span>1</span></label>
+                <label><input type="radio" name="baselineTrustAdvice" value="2"><span>2</span></label>
+                <label><input type="radio" name="baselineTrustAdvice" value="3"><span>3</span></label>
+                <label><input type="radio" name="baselineTrustAdvice" value="4"><span>4</span></label>
+                <label><input type="radio" name="baselineTrustAdvice" value="5"><span>5</span></label>
+                <label><input type="radio" name="baselineTrustAdvice" value="6"><span>6</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p class="question-text">I believe AI systems usually act in the user's best interest.</p>
+            <div class="likert-label-row"><span>Strongly disagree</span><span>Strongly agree</span></div>
+            <div class="likert-scale">
+                <label><input type="radio" name="baselineTrustBestInterest" value="1" required><span>1</span></label>
+                <label><input type="radio" name="baselineTrustBestInterest" value="2"><span>2</span></label>
+                <label><input type="radio" name="baselineTrustBestInterest" value="3"><span>3</span></label>
+                <label><input type="radio" name="baselineTrustBestInterest" value="4"><span>4</span></label>
+                <label><input type="radio" name="baselineTrustBestInterest" value="5"><span>5</span></label>
+                <label><input type="radio" name="baselineTrustBestInterest" value="6"><span>6</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p class="question-text">I am generally skeptical of AI-generated responses.</p>
+            <div class="likert-label-row"><span>Strongly disagree</span><span>Strongly agree</span></div>
+            <div class="likert-scale">
+                <label><input type="radio" name="baselineSkepticism" value="1" required><span>1</span></label>
+                <label><input type="radio" name="baselineSkepticism" value="2"><span>2</span></label>
+                <label><input type="radio" name="baselineSkepticism" value="3"><span>3</span></label>
+                <label><input type="radio" name="baselineSkepticism" value="4"><span>4</span></label>
+                <label><input type="radio" name="baselineSkepticism" value="5"><span>5</span></label>
+                <label><input type="radio" name="baselineSkepticism" value="6"><span>6</span></label>
+            </div>
+        </div>
+
+        <button type="submit">Continue</button>
+    </form>
+</div>
+
+<script src="app.js"></script>
+<script>
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) {
+        window.location.href = "index.html";
+    }
+
+    document.getElementById("preQuestionnaireForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const form = new FormData(e.target);
+
+        const payload = {
+            userId,
+            stepType: "preQuestionnaire",
+            responses: {
+                aiUseFrequency: String(form.get("aiUseFrequency")),
+                aiFamiliarity: form.get("aiFamiliarity"),
+                baselineTrustInfo: form.get("baselineTrustInfo"),
+                baselineTrustAdvice: form.get("baselineTrustAdvice"),
+                baselineTrustBestInterest: form.get("baselineTrustBestInterest"),
+                baselineSkepticism: form.get("baselineSkepticism")
+            }
+        };
+
+        const res = await fetch("/study-event", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            alert("Failed to save questionnaire.");
+            return;
+        }
+
+        moveToNextStep();
+    });
+</script>
+</body>
+</html>

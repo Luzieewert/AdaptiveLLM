@@ -12,10 +12,24 @@
 
     <div class="card">
         <p>
-            In this study, you will interact with an AI assistant in two separate rounds.
-            Before each round, you will indicate how you would like the assistant to communicate.
-            You will then have a short conversation with the assistant about a given topic.
-            Please write at least 3 and at most 10 messages per round.
+            In this study, you will chat with an AI assistant in two separate rounds.
+            Each round includes two short chats about different everyday topics.
+        </p>
+
+        <p>
+            The study consists of two rounds. Depending on the assigned study condition, you will either begin with a standard AI assistant or with a personalized AI assistant.
+            Before each round, you will receive all necessary instructions.
+        </p>
+
+        <p>
+            You can chat as you normally would with an AI assistant. There are no specific tasks or correct answers.
+            Please write at least 3 and at most 10 messages in each chat.
+        </p>
+
+        <p>
+            After each round, you will answer a short questionnaire about your experience in the two chats.
+            At the beginning, you will answer a few questions about your prior experience with AI systems.
+            At the end, you will answer a few demographic questions.
         </p>
 
         <p>
@@ -26,9 +40,15 @@
     </div>
 </div>
 
+<script src="app.js"></script>
 <script>
     function startStudy() {
-        window.location.href = "round.html";
+        localStorage.setItem("stepIndex", "0");
+        localStorage.removeItem("conversationId");
+        localStorage.removeItem("conditionOrder");
+
+        getConditionOrder();
+        goToCurrentStepPage();
     }
 </script>
 </body>
